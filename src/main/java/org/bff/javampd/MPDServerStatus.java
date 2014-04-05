@@ -91,4 +91,9 @@ public class MPDServerStatus implements ServerStatus {
     public boolean isRandom() throws MPDResponseException {
         return "1".equals(getStatus(StatusList.RANDOM));
     }
+    
+    @Override
+    public boolean isConsume() throws MPDResponseException {
+        return "1".equals(getStatus(StatusList.CONSUME));
+    }
 }

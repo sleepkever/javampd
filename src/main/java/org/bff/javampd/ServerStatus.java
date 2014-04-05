@@ -35,6 +35,8 @@ public interface ServerStatus {
     boolean isRepeat() throws MPDResponseException;
 
     boolean isRandom() throws MPDResponseException;
+    
+    boolean isConsume() throws MPDResponseException;
 
     /**
      * Enumeration of the available information from the MPD
@@ -94,6 +96,10 @@ public interface ServerStatus {
          * job id
          */
         UPDATINGSDB("updatings_db:"),
+        /**
+         * Set if playing a song from the playlist consumes that song.
+         */
+        CONSUME("consume:"),
         /**
          * if there is an error, returns message here
          */
