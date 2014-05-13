@@ -1,6 +1,5 @@
 package org.bff.javampd.properties;
 
-import org.bff.javampd.MPD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,11 +13,11 @@ import java.util.Properties;
  * @author bill
  */
 public abstract class MPDProperties implements PropertyLoader {
-    private Logger logger = LoggerFactory.getLogger(MPDProperties.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MPDProperties.class);
 
     private Properties prop;
 
-    private static final String PROPFILE = "/org/bff/javampd/mpd.properties";
+    private static final String PROPFILE = "/mpd.properties";
 
     protected MPDProperties() {
         loadValues();
@@ -32,17 +31,17 @@ public abstract class MPDProperties implements PropertyLoader {
     private void loadValues() {
         prop = new Properties();
 
-        InputStream is = MPD.class.getResourceAsStream(PROPFILE);
+        InputStream is = MPDProperties.class.getResourceAsStream(PROPFILE);
 
         try {
             prop.load(is);
         } catch (Exception e) {
-            logger.error("Could not load properties values", e);
+            LOGGER.error("Could not load properties values", e);
         } finally {
             try {
                 is.close();
             } catch (IOException ex) {
-                logger.error("Could not close properties file stream", ex);
+                LOGGER.error("Could not close properties file stream", ex);
             }
         }
     }

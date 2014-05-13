@@ -23,12 +23,12 @@ import java.util.List;
  * @author Bill
  */
 public class MPDAdmin implements Admin {
-    private final Logger logger = LoggerFactory.getLogger(MPDAdmin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MPDAdmin.class);
 
     private List<MPDChangeListener> listeners =
-            new ArrayList<MPDChangeListener>();
+            new ArrayList<>();
     private List<OutputChangeListener> outputListeners =
-            new ArrayList<OutputChangeListener>();
+            new ArrayList<>();
 
     protected static final String OUTPUT_PREFIX_ID = "outputid:";
     protected static final String OUTPUT_PREFIX_NAME = "outputname:";
@@ -44,9 +44,9 @@ public class MPDAdmin implements Admin {
     @Override
     public Collection<MPDOutput> getOutputs() throws MPDAdminException {
         try {
-            return new ArrayList<MPDOutput>(parseOutputs(commandExecutor.sendCommand(adminProperties.getOutputs())));
+            return new ArrayList<>(parseOutputs(commandExecutor.sendCommand(adminProperties.getOutputs())));
         } catch (MPDException e) {
-            logger.error("Could not get outputs", e);
+            LOGGER.error("Could not get outputs", e);
             throw new MPDAdminException(e);
         }
     }
@@ -57,7 +57,7 @@ public class MPDAdmin implements Admin {
         try {
             return commandExecutor.sendCommand(adminProperties.getOutputDisable(), output.getId()).isEmpty();
         } catch (MPDException e) {
-            logger.error("Could not disable output {}", output, e);
+            LOGGER.error("Could not disable output {}", output, e);
             throw new MPDAdminException(e);
         }
     }
@@ -68,13 +68,13 @@ public class MPDAdmin implements Admin {
         try {
             return commandExecutor.sendCommand(adminProperties.getOutputEnable(), output.getId()).isEmpty();
         } catch (MPDException e) {
-            logger.error("Could not enable output {}", output, e);
+            LOGGER.error("Could not enable output {}", output, e);
             throw new MPDAdminException(e);
         }
     }
 
     private Collection<MPDOutput> parseOutputs(Collection<String> response) {
-        List<MPDOutput> outputs = new ArrayList<MPDOutput>();
+        List<MPDOutput> outputs = new ArrayList<>();
         Iterator<String> iter = response.iterator();
         String line = null;
 

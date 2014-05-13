@@ -27,17 +27,22 @@ public abstract class BaseTest {
     private static Player player;
     private static Admin admin;
     private static StandAloneMonitor monitor;
+    private static ServerStatistics serverStatistics;
 
     static {
         try {
-            mpd = new MPD(TestProperties.getInstance().getServer(),
-                    TestProperties.getInstance().getPort(),
-                    TestProperties.getInstance().getPassword());
+            mpd = new MPD.Builder()
+                    .server(TestProperties.getInstance().getServer())
+                    .port(TestProperties.getInstance().getPort())
+                    .password(TestProperties.getInstance().getPassword())
+                    .build();
+
             database = getMpd().getDatabase();
             playlist = getMpd().getPlaylist();
             player = getMpd().getPlayer();
             admin = getMpd().getAdmin();
             monitor = getMpd().getMonitor();
+            serverStatistics = getMpd().getServerStatistics();
             DataLoader.loadData(new File(TestProperties.getInstance().getPath()));
             for (MPDSong song : Songs.songs) {
                 fillSongId(song);
@@ -63,15 +68,19 @@ public abstract class BaseTest {
     }
 
     public MPD getNewMpd() throws IOException, MPDConnectionException {
-        return new MPD(TestProperties.getInstance().getServer(),
-                TestProperties.getInstance().getPort(),
-                TestProperties.getInstance().getPassword());
+        return new MPD.Builder()
+                .server(TestProperties.getInstance().getServer())
+                .port(TestProperties.getInstance().getPort())
+                .password(TestProperties.getInstance().getPassword())
+                .build();
     }
 
     public MPD getNewMpd(String password) throws IOException, MPDConnectionException {
-        return new MPD(TestProperties.getInstance().getServer(),
-                TestProperties.getInstance().getPort(),
-                password);
+        return new MPD.Builder()
+                .server(TestProperties.getInstance().getServer())
+                .port(TestProperties.getInstance().getPort())
+                .password(password)
+                .build();
     }
 
     /**
@@ -108,5 +117,9 @@ public abstract class BaseTest {
 
     public static StandAloneMonitor getMonitor() {
         return monitor;
+    }
+
+    public static ServerStatistics getServerStatistics() {
+        return serverStatistics;
     }
 }

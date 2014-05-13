@@ -33,7 +33,7 @@ import java.util.List;
 public class MPDPlayer implements Player {
 
     private int oldVolume;
-    private List<PlayerChangeListener> listeners = new ArrayList<PlayerChangeListener>();
+    private List<PlayerChangeListener> listeners = new ArrayList<>();
     private VolumeChangeDelegate volumeChangeDelegate;
 
     private Status status = Status.STATUS_STOPPED;
@@ -44,7 +44,7 @@ public class MPDPlayer implements Player {
     @Inject
     private CommandExecutor commandExecutor;
 
-    private final Logger logger = LoggerFactory.getLogger(MPDPlayer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MPDPlayer.class);
 
     public MPDPlayer() {
         this.volumeChangeDelegate = new VolumeChangeDelegate();
@@ -148,10 +148,10 @@ public class MPDPlayer implements Player {
     public void seekId(MPDSong song, long secs) throws MPDPlayerException {
         List<String> response = null;
         String params[] = new String[2];
-        params[2] = Long.toString(secs);
+        params[1] = Long.toString(secs);
         if (song == null) {
             if (getCurrentSong().getLength() > secs) {
-                params[1] = Integer.toString(getCurrentSong().getId());
+                params[0] = Integer.toString(getCurrentSong().getId());
                 try {
                     response = commandExecutor.sendCommand(playerProperties.getSeekId(), params);
                 } catch (MPDResponseException re) {
@@ -160,7 +160,7 @@ public class MPDPlayer implements Player {
             }
         } else {
             if (song.getLength() >= secs) {
-                params[1] = Integer.toString(song.getId());
+                params[0] = Integer.toString(song.getId());
                 try {
                     response = commandExecutor.sendCommand(playerProperties.getSeekId(), params);
                 } catch (MPDResponseException re) {
@@ -377,7 +377,7 @@ public class MPDPlayer implements Player {
         try {
             info.setSampleRate(Integer.parseInt(sampleRate));
         } catch (NumberFormatException nfe) {
-            logger.error("Could not format sample rate", nfe);
+            LOGGER.error("Could not format sample rate", nfe);
             info.setSampleRate(-1);
         }
     }
@@ -404,7 +404,7 @@ public class MPDPlayer implements Player {
         try {
             info.setChannels(Integer.parseInt(channels));
         } catch (NumberFormatException nfe) {
-            logger.error("Could not format channels", nfe);
+            LOGGER.error("Could not format channels", nfe);
             info.setChannels(-1);
         }
     }
@@ -413,7 +413,7 @@ public class MPDPlayer implements Player {
         try {
             info.setBits(Integer.parseInt(bitRate));
         } catch (NumberFormatException nfe) {
-            logger.error("Could not format bits", nfe);
+            LOGGER.error("Could not format bits", nfe);
             info.setBits(-1);
         }
     }

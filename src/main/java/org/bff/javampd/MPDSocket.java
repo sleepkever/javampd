@@ -22,7 +22,7 @@ import java.util.List;
  * @since: 11/22/13 1:37 PM
  */
 public class MPDSocket {
-    private static Logger logger = LoggerFactory.getLogger(MPDSocket.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MPDSocket.class);
 
     private Socket socket;
     private ResponseProperties responseProperties;
@@ -100,20 +100,20 @@ public class MPDSocket {
                 try {
                     connect();
                 } catch (Exception ex) {
-                    logger.error("Unable to connect to {} on port {}", server, port, ex);
+                    LOGGER.error("Unable to connect to {} on port {}", server, port, ex);
                 }
                 ++count;
-                logger.error("Retrying command {} for the {} time", command.getCommand(), count, se);
+                LOGGER.error("Retrying command {} for the {} time", command.getCommand(), count, se);
             } catch (Exception e) {
-                logger.error("Got Error from: {}", command.getCommand(), e);
+                LOGGER.error("Got Error from: {}", command.getCommand(), e);
                 for (String str : command.getParams()) {
-                    logger.error("\tparam: {}", str);
+                    LOGGER.error("\tparam: {}", str);
                 }
 
                 throw new MPDResponseException(e);
             }
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     /**
@@ -139,7 +139,7 @@ public class MPDSocket {
                 return true;
             }
         } catch (Exception e) {
-            logger.error("Could not determine if response is ok", e);
+            LOGGER.error("Could not determine if response is ok", e);
         }
         return false;
     }
@@ -151,7 +151,7 @@ public class MPDSocket {
                 return true;
             }
         } catch (Exception e) {
-            logger.error("Could not determine if response is error", e);
+            LOGGER.error("Could not determine if response is error", e);
         }
         return false;
     }
@@ -166,17 +166,12 @@ public class MPDSocket {
 
     private String convertCommand(String command, List<String> params) {
         StringBuilder sb = new StringBuilder(command);
-        if (params != null) {
-            for (String param : params) {
-                if (param != null && !param.isEmpty()) {
-                    param = param.replaceAll("\"", "\\\\\"");
-                    sb.append(" \"").append(param).append("\"");
-                }
-            }
-            sb.append("\n");
+        for (String param : params) {
+            param = param.replaceAll("\"", "\\\\\"");
+            sb.append(" \"").append(param).append("\"");
         }
 
-        return sb.toString();
+        return sb.append("\n").toString();
     }
 
     public synchronized boolean sendCommands(List<MPDCommand> commandList) throws MPDResponseException {
@@ -199,7 +194,7 @@ public class MPDSocket {
     }
 
     private List<String> sendBytes(String command) throws IOException, MPDResponseException {
-        logger.debug("start command: " + command.trim());
+        LOGGER.debug("start command: " + command.trim());
         byte[] bytesToSend = command.getBytes(commandProperties.getEncoding());
 
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
@@ -207,7 +202,7 @@ public class MPDSocket {
         OutputStream outStream = socket.getOutputStream();
         outStream.write(bytesToSend);
 
-        List<String> response = new ArrayList<String>();
+        List<String> response = new ArrayList<>();
 
         String inLine = in.readLine();
         while (inLine != null) {
@@ -222,9 +217,9 @@ public class MPDSocket {
             inLine = in.readLine();
         }
         for (String s : response) {
-            logger.debug(s);
+            LOGGER.debug(s);
         }
-        logger.debug("end command: " + command.trim());
+        LOGGER.debug("end command: " + command.trim());
 
         return response;
     }
